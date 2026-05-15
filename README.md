@@ -10,6 +10,25 @@ SCANOSS distinguishes between two types of matches:
 
 By removing a significant share of functions from each copied file, the files no longer hash-match their originals as complete units, but the retained code blocks still produce snippet-level hits.
 
+## Repository structure
+
+The snippet files are split across the main repository and a Git submodule so that a single ORT scan produces snippet findings with **two distinct provenances** — useful for testing provenance-grouped UI views.
+
+```
+src/                          ← main repo (provenance 1)
+  class-transformer__ClassTransformer.ts
+  class-validator__MetadataStorage.ts
+  class-validator__ValidationExecutor.ts
+
+submodule/                    ← git submodule: Etsija/test-snippet-findings-sub (provenance 2)
+  src/
+    rxjs__bufferTime.ts
+    tsyringe__dependency-container.ts
+    typeorm__RelationLoader.ts
+```
+
+ORT creates a separate `ScanResult` (with its own `provenance`) for the root repository and for each submodule, which is what drives the grouping in the snippet findings data model.
+
 ---
 
 ## Source files
